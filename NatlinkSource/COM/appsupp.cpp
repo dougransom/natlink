@@ -25,7 +25,7 @@ CDragonCode * initModule();
 
 CDgnAppSupport::CDgnAppSupport()
 {
-	m_pNatLinkMain = NULL;
+	m_pNatlinkModule = NULL;
 	m_pDragCode = NULL;
 }
 
@@ -35,7 +35,31 @@ CDgnAppSupport::~CDgnAppSupport()
 {
 }
 
-
+static void CallPyFunctionOrDisplayError(CDragonCode* pDragCode, PyObject* pMod, const char* szModName, const char* szName)
+{
+	PyObject* result = PyObject_CallMethod(pMod, szName, NULL);
+	if (result == NULL)
+	{
+		std::string err = std::string("NatLink: an exception occurred in '") + std::string(szModName) + std::string(".") + std::string(szName) + std::string("'.\r\n");
+		pDragCode->displayText(err.c_str(), TRUE);
+		if (PyErr_Occurred()) {
+			PyObject* ptype, * pvalue, * ptraceback;
+			PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+			if (pvalue) {
+				PyObject* pstr = PyObject_Str(pvalue);
+				if (pstr) {
+					const char* pStrErrorMessage = PyUnicode_AsUTF8(pstr);
+					pDragCode->displayText("Error message:\r\n", TRUE);
+					pDragCode->displayText(pStrErrorMessage, TRUE);
+					pDragCode->displayText("\r\n", TRUE);
+				}
+				Py_XDECREF(pstr);
+			}
+			PyErr_Restore(ptype, pvalue, ptraceback);
+		}
+	}
+	Py_XDECREF(result);
+}
 
 //---------------------------------------------------------------------------
 // Called by NatSpeak once when the compatibility module is first loaded.
@@ -75,56 +99,26 @@ STDMETHODIMP CDgnAppSupport::Register( IServiceProvider * pIDgnSite )
 		return S_OK;
 	}
 
-	/*
-	* https://www.python.org/dev/peps/pep-0514/
-	* According to PEP514 python should scan this registry location when
-	* it builds sys.path when the interpreter is initialised. At least on
-	* my system this is not happening correctly, and natlinkmain is not being
-	* found. This code pulls the value (set by the config scripts) from the
-	* registry manually and adds it to the module search path.
-	*
-	* Exceptions raised here will not cause a crash, so the worst case scenario
-	* is that we add a value to the path which is already there.
-	*/
-	PyRun_SimpleString("import winreg, sys");
-	PyRun_SimpleString("hive, key, flags = (winreg.HKEY_LOCAL_MACHINE, f\"Software\\\\Python\\\\PythonCore\\\\{str(sys.winver)}\\\\PythonPath\\\\Natlink\", winreg.KEY_WOW64_32KEY)");
-	// PyRun_SimpleString returns 0 on success and -1 if an exception is raised.
-	if (PyRun_SimpleString("natlink_key = winreg.OpenKeyEx(hive, key, access=winreg.KEY_READ | flags)")) {
-		m_pDragCode->displayText("Failed to find Natlink key in Windows registry.\r\n");
-	}
-	if (PyRun_SimpleString("core_path = winreg.QueryValue(natlink_key, \"\")")) {
-		m_pDragCode->displayText("Failed to extract value from Natlink key.\r\n");
-	}
-	PyRun_SimpleString("sys.path.append(core_path)");
-	PyRun_SimpleString("winreg.CloseKey(natlink_key)");
+#ifdef NATLINK_VERSION
+	const std::string natlinkVersionMsg = std::string("Natlink Version: ") + std::string(NATLINK_VERSION) + std::string("\r\n");
+	m_pDragCode->displayText(natlinkVersionMsg.c_str());
+#endif
+	const std::string pythonVersionMsg = std::string("Python Version: ") + std::string(Py_GetVersion()) + std::string("\r\n");
+	m_pDragCode->displayText(pythonVersionMsg.c_str());
 
 	// now load the Python code which sets all the callback functions
 	m_pDragCode->setDuringInit( TRUE );
-    m_pNatLinkMain = PyImport_ImportModule( "redirect_output" );
-    m_pNatLinkMain = PyImport_ImportModule( "natlinkmain" );
-	m_pDragCode->setDuringInit( FALSE );
 
-
-	if( m_pNatLinkMain == NULL ) {
-		OutputDebugString(
-			TEXT( "NatLink: an exception occurred loading 'natlinkmain' module" ) ); // RW TEXT macro added
-		m_pDragCode->displayText(
-			"An exception occurred loading 'natlinkmain' module\r\n", TRUE );
-		if (PyErr_Occurred()) {
-			PyObject *ptype, *pvalue, *ptraceback;
-			PyErr_Fetch(&ptype, &pvalue, &ptraceback);
-			if(pvalue) {
-				PyObject *pstr = PyObject_Str(pvalue);
-				if(pstr) {
-					const char* pStrErrorMessage = PyUnicode_AsUTF8(pstr);
-					m_pDragCode->displayText("Error message:\r\n");
-					m_pDragCode->displayText(pStrErrorMessage, TRUE);
-				}
-				Py_XDECREF(pstr);
-			}
-			PyErr_Restore(ptype, pvalue, ptraceback);
-		}
+    m_pNatlinkModule = PyImport_ImportModule( "natlink" );
+	if ( m_pNatlinkModule == NULL ) {
+		OutputDebugString( TEXT( "NatLink: an exception occurred loading 'natlink' module" ) ); // RW TEXT macro added
+		m_pDragCode->displayText( "An exception occurred loading 'natlink' module\r\n", TRUE );
 	}
+
+	CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlink", "redirect_all_output_to_natlink_window");
+	CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlink", "run_loader");
+
+	m_pDragCode->setDuringInit( FALSE );
 
 	return S_OK;
 }
@@ -140,7 +134,7 @@ STDMETHODIMP CDgnAppSupport::UnRegister()
 	m_pDragCode->natDisconnect();
 
 	// free our reference to the Python modules
-	Py_XDECREF( m_pNatLinkMain );
+	Py_XDECREF( m_pNatlinkModule );
 
 	return S_OK;
 }
@@ -194,5 +188,5 @@ STDMETHODIMP CDgnAppSupport::EndProcess( DWORD dwProcessID )
 
 void CDgnAppSupport::reloadPython()
 {
-	PyImport_ReloadModule(m_pNatLinkMain);
+	PyImport_ReloadModule(m_pNatlinkModule);
 }
