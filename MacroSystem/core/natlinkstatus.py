@@ -130,11 +130,9 @@ import sys
 import pprint
 import stat
 import winreg 
-import natlinkcorefunctions
 import pywintypes
 import time
 import types
-import inivars
 from pathqh import path   
 # for getting generalised env variables:
 
