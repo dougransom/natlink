@@ -55,8 +55,8 @@ INT_PTR CALLBACK dialogProc(
 
             hMenu = CreateMenu();
             hSubMenu = CreatePopupMenu();
-            AppendMenu(hSubMenu, MF_STRING, IDD_RELOAD, L"&Reload");
-            AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, L"&File");
+            AppendMenu(hSubMenu, MF_STRING, IDD_RELOAD, "&Reload");
+            AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
 
 
 
