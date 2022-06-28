@@ -38,6 +38,18 @@ CDgnAppSupport::~CDgnAppSupport()
 {
 }
 
+static int pyrun_string(std::string python_cmd)
+{
+	std::string message = std::string("CDgnAppSupport Running python: ") + python_cmd;
+	char const* const msg_str = python_cmd.c_str();
+	OutputDebugStringA(msg_str);
+	return PyRun_SimpleString(python_cmd.c_str());
+}
+static int pyrun_string(const char python_cmd[])
+{
+	return pyrun_string(std::string(python_cmd));
+}
+
 static std::string AddOurDirToConfig(PyConfig *config) {
 	using winreg::RegKey, winreg::RegResult;
 	// _natlinkcore.pyd (this code, dear reader!) doesn't know where it is; find out
@@ -221,6 +233,24 @@ STDMETHODIMP CDgnAppSupport::Register( IServiceProvider * pIDgnSite )
 	} else {
 		m_pDragCode->displayText( "Natlink is loaded...\n\n", FALSE );
 	}
+
+	//need to add the path of natlinkcore to the Python path.
+	//it could be in either platlib\natlinkcore (i.e. the python install diretory/site-packages)
+	//sysconfig.get_path('purelib')
+	//
+	//or in site.USER_SITE/site-package.  
+	//
+	pyrun_string("import sys,site");
+    pyrun_string("import pydebugstring.output as o");
+
+	pyrun_string("d1=site.USER_SITE+'/natlinkcore'");
+	pyrun_string("d2=sys.get_path('purelib'+'/natlinkcore'");
+
+	pyrun_string("sys.path.append(d1)"); 
+	pyrun_string("sys.path.append(d2)");
+
+
+
 	//CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore", "redirect_all_output_to_natlink_window");
 	CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore.redirect_output", "redirect");
 	DisplayPythonException(m_pDragCode);
