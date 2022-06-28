@@ -57,11 +57,11 @@ import cmd
 from pathlib import Path
 import configparser
 # from win32com.shell import shell
-from natlink import natlinkstatus
-from natlink import config
-from natlink import loader
-from natlink import readwritefile
-from natlink import wxdialogs
+from natlinkcore import natlinkstatus
+from natlinkcore import config
+from natlinkcore import loader
+from natlinkcore import readwritefile
+from natlinkcore import wxdialogs
 
 isfile, isdir, join = os.path.isfile, os.path.isdir, os.path.join
 

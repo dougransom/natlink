@@ -4,7 +4,7 @@ import logging
 import os
 from enum import IntEnum
 from typing import List, Iterable, Dict
-import natlink
+from natlink import _natlink_core as natlink
 
 class NoGoodConfigFoundException(natlink.NatError):
     pass

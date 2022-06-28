@@ -7,8 +7,7 @@ import sys
 from types import TracebackType
 from typing import TextIO, Optional, Type, Iterator, AnyStr, Iterable, List
 
-import natlink
-
+from natlink import _natlink_core as natlink
 
 class FakeTextIO(TextIO):
     def __enter__(self) -> TextIO:

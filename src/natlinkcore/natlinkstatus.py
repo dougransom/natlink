@@ -94,14 +94,12 @@ import platform
 import logging
 from typing import Any
 from pathlib import Path
-try:
-    from natlink import loader
-except ModuleNotFoundError:
-    print('Natlink is not enabled, module natlink and/or natlink.loader cannot be found\n\texit natlinkstatus.py...')
-    sys.exit()
-from natlink import config
-from natlink import singleton
-import natlink
+
+from natlink import _natlink_core as natlink
+
+from natlinkcore import loader
+from natlinkcore import config
+from natlinkcore import singleton
 
 ## setup a natlinkmain instance, for getting properties from the loader:
 ## note, when loading the natlink module via Dragon, you can call simply:

@@ -3,7 +3,7 @@
 
 import pytest
 
-from natlink.config import *
+from natlinkcore.config import *
 from natlink import loader
 
 @pytest.fixture()

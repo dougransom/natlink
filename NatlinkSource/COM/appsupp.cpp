@@ -221,7 +221,8 @@ STDMETHODIMP CDgnAppSupport::Register( IServiceProvider * pIDgnSite )
 	} else {
 		m_pDragCode->displayText( "Natlink is loaded...\n\n", FALSE );
 	}
-	CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore", "redirect_all_output_to_natlink_window");
+	//CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore", "redirect_all_output_to_natlink_window");
+	CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore.redirect_output", "redirect");
 	DisplayPythonException(m_pDragCode);
 	CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore", "run_loader");
 	DisplayPythonException(m_pDragCode);

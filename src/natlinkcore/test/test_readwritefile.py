@@ -3,7 +3,7 @@
 import os
 import configparser
 # import pytest
-from natlink.readwritefile import ReadWriteFile
+from natlinkcore.readwritefile import ReadWriteFile
 
 thisFile = __file__
 thisDir, Filename = os.path.split(thisFile)

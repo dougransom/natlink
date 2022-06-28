@@ -48,8 +48,8 @@ import struct
 import sys
 import traceback
 
-import natlink
-from natlink import gramparser
+from natlink import _natlink_core as natlink
+from natlinkcore import gramparser
 
 
 useDtactionsSendkeys = 1   ## via dtactions to dragonfly

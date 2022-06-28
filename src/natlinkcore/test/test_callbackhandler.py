@@ -2,7 +2,7 @@
 
 import pytest
 
-from natlink.callbackhandler import CallbackHandler
+from natlinkcore.callbackhandler import CallbackHandler
     
 class MakeFunctions:    
     def a1(self):
