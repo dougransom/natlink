@@ -14,6 +14,6 @@ dependencies= [
     "pydebugstring"
 ]
 [project.scripts]
-natlinkconfig = "natlinkcore.configure.natlinkconfigfunctions:main"
+natlinkconfig = "natlinkcore.configure.natlinkconfigfunctions:main_cli"
 [project.urls]
 Home = "https://github.com/dictation-toolbox/natlink/"
