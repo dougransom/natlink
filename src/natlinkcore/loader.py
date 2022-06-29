@@ -475,7 +475,8 @@ class NatlinkMain(metaclass=Singleton):
         if not self.config.directories:
             self.logger.warning('Starting Natlink, but no directories to load are specified.\n\tPlease add one or more directories in your config file')
             if self.config.config_path.startswith(str(thisDir)):
-                self.logger.warning(f'Also make sure your "natlink.ini" is properly located, not in "{self.config.config_path}"')
+                self.logger.warning('Also make sure your "natlink.ini" is properly located, not in above location')
+
             return
         # self.logger.debug(f'directories: {self.config.directories}')
         self._add_dirs_to_path(self.config.directories)  

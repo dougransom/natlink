@@ -140,7 +140,7 @@ static void DisplayVersions(CDragonCode* pDragCode) {
 
 	pDragCode->displayText(natlinkVersionMsg.c_str(), FALSE); // TODO: remove since version is showed in title of window
 	pDragCode->displayText((std::string("Natlink pyd path: ")+ get_this_module_path()).c_str(),FALSE);
-	pDragCode->displayText("Use  DebugView to debug natlink problems. https://docs.microsoft.com/en-us/sysinternals/downloads/debugview");
+	pDragCode->displayText("\nUse DebugView to debug natlink problems.\n\thttps://docs.microsoft.com/en-us/sysinternals/downloads/debugview\n");
 #endif
 	const std::string pythonVersionMsg = std::string("Python Version: ") + std::string(Py_GetVersion()) + std::string("\r\n");
 	pDragCode->displayText(pythonVersionMsg.c_str(), FALSE);
@@ -279,9 +279,13 @@ STDMETHODIMP CDgnAppSupport::Register( IServiceProvider * pIDgnSite )
 	pyrun_string("sys.path.append(d2)");
 
 	//we have to import natlinkcore this way as well, so we can use natlinkcore.* in pyrun_string
-	pyrun_string("import natlinkcore");
-	pyrun_string("natlinkcore.redirect_all_output_to_natlink_window()");
-	pyrun_string("natlinkcore.run_loader()");
+	//pDragCode->displayText("import redirect\n");
+
+	pyrun_string("from natlinkcore import redirect_output");
+	pyrun_string("redirect_output.redirect()");
+
+	pyrun_string("from natlinkcore import loader");
+	pyrun_string("loader.run()");
 
 	m_pDragCode->setDuringInit( FALSE );
 	return S_OK;
