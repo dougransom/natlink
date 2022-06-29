@@ -121,7 +121,7 @@ OutputDebugString from
  the Natlink window to be active, and can be left in production code so that it is avaialble if there are issues to resolve.
 
  To view the output of OutputDebugString, you can use 
-[DebugView] [https://docs.microsoft.com/en-us/sysinternals/downloads/debugview].  The output will also be displayed in some debuggers
+[DebugView](https://docs.microsoft.com/en-us/sysinternals/downloads/debugview).  The output will also be displayed in some debuggers
 if you have managed to attach one.
 
 
