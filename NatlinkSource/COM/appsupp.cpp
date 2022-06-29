@@ -37,13 +37,38 @@ CDgnAppSupport::CDgnAppSupport()
 CDgnAppSupport::~CDgnAppSupport()
 {
 }
+//see https://gist.github.com/pwm1234/05280cf2e462853e183d
+static std::string get_this_module_path()
+{
+	void* address = (void*)get_this_module_path;
+	char path[FILENAME_MAX];
+	HMODULE hm = NULL;
 
+	if (!GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+		GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+		(LPCSTR)address,
+		&hm))
+	{
+		//if this fails, well just return nonsense.
+		return "";
+	}
+	GetModuleFileNameA(hm, path, sizeof(path));
+
+	std::string p = path;
+	return p;
+}
 static int pyrun_string(std::string python_cmd)
 {
 	std::string message = std::string("CDgnAppSupport Running python: ") + python_cmd;
-	char const* const msg_str = python_cmd.c_str();
+	char const* const msg_str = message.c_str();
 	OutputDebugStringA(msg_str);
-	return PyRun_SimpleString(python_cmd.c_str());
+	int rc = PyRun_SimpleString(python_cmd.c_str());
+	std::string result_message=std::string("CDganAppSupport Ran ") + python_cmd  + std::string(" result: ") +
+		std::to_string(rc);
+
+
+	OutputDebugStringA(result_message.c_str());
+	return rc;
 }
 static int pyrun_string(const char python_cmd[])
 {
@@ -112,7 +137,10 @@ static void DisplayVersions(CDragonCode* pDragCode) {
 #ifdef NATLINK_VERSION
 	const std::string natlinkVersionMsg = std::string("Natlink Version: ") + std::string(NATLINK_VERSION) + 
 										  std::string("\r\n");
+
 	pDragCode->displayText(natlinkVersionMsg.c_str(), FALSE); // TODO: remove since version is showed in title of window
+	pDragCode->displayText((std::string("Natlink pyd path: ")+ get_this_module_path()).c_str(),FALSE);
+	pDragCode->displayText("Use  DebugView to debug natlink problems. https://docs.microsoft.com/en-us/sysinternals/downloads/debugview");
 #endif
 	const std::string pythonVersionMsg = std::string("Python Version: ") + std::string(Py_GetVersion()) + std::string("\r\n");
 	pDragCode->displayText(pythonVersionMsg.c_str(), FALSE);
@@ -224,9 +252,9 @@ STDMETHODIMP CDgnAppSupport::Register( IServiceProvider * pIDgnSite )
 
 	// now load the Python code which sets all the callback functions
 	m_pDragCode->setDuringInit( TRUE );
-    m_pNatlinkModule = PyImport_ImportModule( "natlink" );
+    m_pNatlinkModule = PyImport_ImportModule( "natlinkcore" );
 	if ( m_pNatlinkModule == NULL ) {
-		OutputDebugString( TEXT( "Natlink: an exception occurred loading 'natlink' module" ) );
+		OutputDebugString( TEXT( "Natlink: an exception occurred loading 'natlinkcore' module" ) );
 		DisplaySysPath(m_pDragCode);
 		DisplayPythonException(m_pDragCode);
 		return S_OK;
@@ -240,22 +268,21 @@ STDMETHODIMP CDgnAppSupport::Register( IServiceProvider * pIDgnSite )
 	//
 	//or in site.USER_SITE/site-package.  
 	//
-	pyrun_string("import sys,site");
+	pyrun_string("import sys,site,sysconfig");
     pyrun_string("import pydebugstring.output as o");
 
-	pyrun_string("d1=site.USER_SITE+'/natlinkcore'");
-	pyrun_string("d2=sys.get_path('purelib'+'/natlinkcore'");
+	//add natlinkcore to the import paths, because the is required for pyrun_string to load modules from natlinkcore
+	pyrun_string("d1=site.USER_SITE+'\\natlinkcore'");
+	pyrun_string("d2=sysconfig.get_path('purelib')+'\\natlinkcore'");
 
 	pyrun_string("sys.path.append(d1)"); 
 	pyrun_string("sys.path.append(d2)");
 
+	//we have to import natlinkcore this way as well, so we can use natlinkcore.* in pyrun_string
+	pyrun_string("import natlinkcore");
+	pyrun_string("natlinkcore.redirect_all_output_to_natlink_window()");
+	pyrun_string("natlinkcore.run_loader()");
 
-
-	//CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore", "redirect_all_output_to_natlink_window");
-	CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore.redirect_output", "redirect");
-	DisplayPythonException(m_pDragCode);
-	CallPyFunctionOrDisplayError(m_pDragCode, m_pNatlinkModule, "natlinkcore", "run_loader");
-	DisplayPythonException(m_pDragCode);
 	m_pDragCode->setDuringInit( FALSE );
 	return S_OK;
 }

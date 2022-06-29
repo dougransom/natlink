@@ -6,8 +6,16 @@
 import sys
 from types import TracebackType
 from typing import TextIO, Optional, Type, Iterator, AnyStr, Iterable, List
+from  pydebugstring.output import outputDebugString
+
+outputDebugString(f"Loading {__file__}  sys.path={sys.path}" )
+
+outputDebugString(f"{__file__} importing _natlink_core" )
 
 from natlink import _natlink_core as natlink
+
+outputDebugString(f"{__file__} imported _natlink_core" )
+
 
 class FakeTextIO(TextIO):
     def __enter__(self) -> TextIO:
@@ -90,5 +98,9 @@ class NewStderr(FakeTextIO):
 
 
 def redirect() -> None:
+    outputDebugString(f"In {__file__}.redirect()" )
     sys.stdout = NewStdout()
     sys.stderr = NewStderr()
+
+
+outputDebugString(f"{__file__}  loaded" )
