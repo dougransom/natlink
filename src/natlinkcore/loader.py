@@ -21,6 +21,11 @@ from natlinkcore.callbackhandler import CallbackHandler
 from natlinkcore.singleton import Singleton
 # the possible languages (for get_user_language) (runs at start and on_change_callback, user)
 # default is "enx", being one of the English dialects...
+from natlinkcore.__init__ import getThisDir
+
+thisDir = getThisDir(__file__)
+
+
 UserLanguages = { 
     "Nederlands": "nld",
     "Fran\xe7ais": "fra",
@@ -524,8 +529,12 @@ class NatlinkMain(metaclass=Singleton):
         func = func or Config.get
         return func(section=section, option=option, fallback=fallback)
 
-def get_natlink_system_config_filename() -> str:
-    return get_config_info_from_registry('installPath')
+# def get_natlink_system_config_filename() -> str:
+#     return get_config_info_from_registry('installPath')
+
+def get_natlinkcore_dirname() -> str:
+    return thisDir
+    # return get_config_info_from_registry('installPath')
 
 def get_config_info_from_registry(key_name: str) -> str:
     hive, key, flags = (winreg.HKEY_LOCAL_MACHINE, r'Software\Natlink', winreg.KEY_WOW64_32KEY)
@@ -547,7 +556,7 @@ def config_locations() -> Iterable[str]:
     home = expanduser('~')
     config_sub_dir = '.natlink'
     natlink_inifile = 'natlink.ini'
-    fallback_config_file = join(get_natlink_system_config_filename(), "DefaultConfig", natlink_inifile)
+    fallback_config_file = join(get_natlinkcore_dirname(), "DefaultConfig", natlink_inifile)
     if not isfile(fallback_config_file):
         raise OSError(f'fallback_config_file does not exist: "{fallback_config_file}"')
     # try NATLINKUSERDIR setting:
