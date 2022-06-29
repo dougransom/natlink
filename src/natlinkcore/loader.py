@@ -21,9 +21,8 @@ from natlinkcore.callbackhandler import CallbackHandler
 from natlinkcore.singleton import Singleton
 # the possible languages (for get_user_language) (runs at start and on_change_callback, user)
 # default is "enx", being one of the English dialects...
-from natlinkcore.__init__ import getThisDir
-
-thisDir = getThisDir(__file__)
+from natlinkcore import getThisDir
+thisDir = getThisDir(__file__)  # return a Path instance
 
 
 UserLanguages = { 
@@ -367,6 +366,12 @@ class NatlinkMain(metaclass=Singleton):
         self.remove_modules_that_no_longer_exist()
 
         mod_paths = self.module_paths_for_user
+        if not mod_paths:
+            fallback_directory = Path(get_natlinkcore_dirname())/"DefaultConfig"
+            if not fallback_directory.is_dir():
+                raise OSError(f'NatlinkMain.trigger_load: no directories specified, and fallback_directory is invalid: "{str(fallback_directory)}"')
+            mod_paths = self._module_paths_in_dirs([fallback_directory])
+            print(f'Warning, no directories specified for Natlink grammars,\n\tfalling back to default configuration "{str(fallback_directory)}"')
         self._pre_load_callback.run()
         self.load_or_reload_modules(mod_paths, force_load=force_load)
         self._post_load_callback.run()
@@ -468,7 +473,9 @@ class NatlinkMain(metaclass=Singleton):
         self.logger.info(f'starting natlink loader from config file:\n\t"{self.config.config_path}"')
         natlink.active_loader = self
         if not self.config.directories:
-            self.logger.warning(f'Starting Natlink, but no directories to load are specified.\n\tPlease add one or more directories\n\tin config file: "{self.config.config_path}".')
+            self.logger.warning('Starting Natlink, but no directories to load are specified.\n\tPlease add one or more directories in your config file')
+            if self.config.config_path.startswith(str(thisDir)):
+                self.logger.warning(f'Also make sure your "natlink.ini" is properly located, not in "{self.config.config_path}"')
             return
         # self.logger.debug(f'directories: {self.config.directories}')
         self._add_dirs_to_path(self.config.directories)  
@@ -590,5 +597,6 @@ def run() -> None:
 if __name__ == "__main__":
     natlink.natConnect()
     run()
+    
     natlink.natDisconnect()
     

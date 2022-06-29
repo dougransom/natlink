@@ -4,12 +4,18 @@ It gives the instructions for a correct place to put natlink.ini in
 """
 import os
 import os.path
+from natlinkcore import getThisDir
+
 join, expanduser, getenv = os.path.join, os.path.expanduser, os.getenv
 isfile, isdir = os.path.isfile, os.path.isdir
 home = expanduser('~')
 
 thisFile = __file__
-this_dir, this_filename = __file__.rsplit('\\', 1)
+_this_dir, this_filename = __file__.rsplit('\\', 1)
+thisDir = getThisDir(__file__)
+if _this_dir != thisDir:
+    print(f'Working with symlinks!\n\tPoint to the sitepackages directory: "{_this_dir}",\n\tbut edit in "{thisDir}"\n')
+this_dir = thisDir
 
 print(f'\n\n'
     f'\nThis is the file "{this_filename}" from directory "{this_dir}"'
