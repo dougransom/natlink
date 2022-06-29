@@ -21,6 +21,10 @@ from natlinkcore.callbackhandler import CallbackHandler
 from natlinkcore.singleton import Singleton
 # the possible languages (for get_user_language) (runs at start and on_change_callback, user)
 # default is "enx", being one of the English dialects...
+from natlinkcore import getThisDir
+thisDir = getThisDir(__file__)  # return a Path instance
+
+
 UserLanguages = { 
     "Nederlands": "nld",
     "Fran\xe7ais": "fra",
@@ -362,6 +366,12 @@ class NatlinkMain(metaclass=Singleton):
         self.remove_modules_that_no_longer_exist()
 
         mod_paths = self.module_paths_for_user
+        if not mod_paths:
+            fallback_directory = Path(get_natlinkcore_dirname())/"DefaultConfig"
+            if not fallback_directory.is_dir():
+                raise OSError(f'NatlinkMain.trigger_load: no directories specified, and fallback_directory is invalid: "{str(fallback_directory)}"')
+            mod_paths = self._module_paths_in_dirs([fallback_directory])
+            print(f'Warning, no directories specified for Natlink grammars,\n\tfalling back to default configuration "{str(fallback_directory)}"')
         self._pre_load_callback.run()
         self.load_or_reload_modules(mod_paths, force_load=force_load)
         self._post_load_callback.run()
@@ -463,7 +473,10 @@ class NatlinkMain(metaclass=Singleton):
         self.logger.info(f'starting natlink loader from config file:\n\t"{self.config.config_path}"')
         natlink.active_loader = self
         if not self.config.directories:
-            self.logger.warning(f'Starting Natlink, but no directories to load are specified.\n\tPlease add one or more directories\n\tin config file: "{self.config.config_path}".')
+            self.logger.warning('Starting Natlink, but no directories to load are specified.\n\tPlease add one or more directories in your config file')
+            if self.config.config_path.startswith(str(thisDir)):
+                self.logger.warning('Also make sure your "natlink.ini" is properly located, not in above location')
+
             return
         # self.logger.debug(f'directories: {self.config.directories}')
         self._add_dirs_to_path(self.config.directories)  
@@ -524,8 +537,12 @@ class NatlinkMain(metaclass=Singleton):
         func = func or Config.get
         return func(section=section, option=option, fallback=fallback)
 
-def get_natlink_system_config_filename() -> str:
-    return get_config_info_from_registry('installPath')
+# def get_natlink_system_config_filename() -> str:
+#     return get_config_info_from_registry('installPath')
+
+def get_natlinkcore_dirname() -> str:
+    return thisDir
+    # return get_config_info_from_registry('installPath')
 
 def get_config_info_from_registry(key_name: str) -> str:
     hive, key, flags = (winreg.HKEY_LOCAL_MACHINE, r'Software\Natlink', winreg.KEY_WOW64_32KEY)
@@ -547,7 +564,7 @@ def config_locations() -> Iterable[str]:
     home = expanduser('~')
     config_sub_dir = '.natlink'
     natlink_inifile = 'natlink.ini'
-    fallback_config_file = join(get_natlink_system_config_filename(), "DefaultConfig", natlink_inifile)
+    fallback_config_file = join(get_natlinkcore_dirname(), "DefaultConfig", natlink_inifile)
     if not isfile(fallback_config_file):
         raise OSError(f'fallback_config_file does not exist: "{fallback_config_file}"')
     # try NATLINKUSERDIR setting:
@@ -581,5 +598,6 @@ def run() -> None:
 if __name__ == "__main__":
     natlink.natConnect()
     run()
+    
     natlink.natDisconnect()
     

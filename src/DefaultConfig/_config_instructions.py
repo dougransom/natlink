@@ -14,7 +14,7 @@ thisFile = __file__
 _this_dir, this_filename = __file__.rsplit('\\', 1)
 thisDir = getThisDir(__file__)
 if _this_dir != thisDir:
-    print(f'Working with symlinks!\n\tPoint to the sitepackages directory: "{_this_dir}",\n\tbut edit in "{thisDir}"\n')
+    print(f'Working with symlinks! Point to the sitepackages directory: "{_this_dir}", but edit in "{thisDir}"')
 this_dir = thisDir
 
 print(f'\n\n'
