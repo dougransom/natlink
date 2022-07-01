@@ -1,44 +1,44 @@
 
-#pylint:disable= C0114, C0116
+#pylint:disable= C0114, C0116, R1732
 import os
-import shutil
 import configparser
-# import pytest
+import pytest
 from natlinkcore.readwritefile import ReadWriteFile
 
 thisFile = __file__
 thisDir, Filename = os.path.split(thisFile)
 testDir = os.path.join(thisDir, 'readwritefiletest')
-testOutputDir = os.path.join(testDir, 'output')
-shutil.rmtree(testOutputDir)
-os.mkdir(testOutputDir)
 
-def test_read_file():
+
+def setup_module(module):
+    pass
+
+def teardown_module(module):
     for F in os.listdir(testDir):
-        if F.endswith('.ini'):
+        if F.startswith('output-'):
             F_path = os.path.join(testDir, F)
-            rwfile = ReadWriteFile()
-            text = rwfile.readAnything(F_path)
-            print(f'F: "{F}", encoding: {rwfile.encoding}, bom: {rwfile.bom}')
-            print(f'len text: {len(text)}')
-            print('-'*80)
-            if rwfile.bom:
-                print(f'{rwfile.bom}')
-                print(f'{rwfile.rawText}')
+            os.remove(F_path)
 
 def test_only_write_file():
     join, isfile = os.path.join, os.path.isfile
-    newFile = join(testDir, 'newfile.txt')
+    newFile = join(testDir, 'output-newfile.txt')
     if isfile(newFile):
         os.unlink(newFile)
     rwfile = ReadWriteFile()
     text = ''
     rwfile.writeAnything(newFile, text)
     assert open(newFile, 'rb').read() == b''
+ 
+    # read back empty file:
+    rwfile = ReadWriteFile()
+    text = rwfile.readAnything(newFile)
+    assert rwfile.encoding == 'ascii'
+    assert rwfile.bom == ''
+    assert text == ''
     
 def test_accented_characters_write_file():
     join, isfile = os.path.join, os.path.isfile
-    newFile = join(testDir, 'accented.txt')
+    newFile = join(testDir, 'output-accented.txt')
     if isfile(newFile):
         os.unlink(newFile)
     text = 'caf\xe9'
@@ -53,6 +53,10 @@ def test_accented_characters_write_file():
     testTextBinary = open(newFile, 'rb').read()
     assert testTextBinary == b'caf&#233;'
     assert len(testTextBinary) == 9
+
+    text_back = rwfile.readAnything(newFile)
+    assert text_back == 'caf&#233;'
+    
     rwfile.writeAnything(newFile, text, errors='replace')
     testTextBinary = open(newFile, 'rb').read()
     assert testTextBinary == b'caf?'
@@ -61,6 +65,12 @@ def test_accented_characters_write_file():
     testTextBinary = open(newFile, 'rb').read()
     assert testTextBinary == b'caf'
     assert len(testTextBinary) == 3
+    
+    rwfile_utf = ReadWriteFile(encodings=['utf-8'])
+    text = 'Caf\xe9'
+    rwfile_utf.writeAnything(newFile, text)
+    text_back = rwfile_utf.readAnything(newFile)
+    assert text == text_back
 
 def test_other_encodings_write_file():
     join = os.path.join
@@ -84,11 +94,11 @@ def test_latin1_cp1252_write_file():
 def test_read_write_file():
     listdir, join, splitext = os.listdir, os.path.join, os.path.splitext
     for F in listdir(testDir):
-        if F.endswith('.ini'):
+        if not F.startswith('output-'):
+            Fout = 'output-' + F
             F_path = join(testDir, F)
             rwfile = ReadWriteFile()
             text = rwfile.readAnything(F_path)
-            print(f'F: "{F}", encoding: {rwfile.encoding}, bom: {rwfile.bom}')
             trunk, _ext = splitext(F)
             Fout = trunk + ".txt"
             Fout_path = join(testDir, Fout)
@@ -124,14 +134,6 @@ def test_read_config_file():
                 Fout_path = join(testDir, Fout)
                 Config.write(open(Fout_path, 'w', encoding=rwfile.encoding))
 
-            
-            
-        
-    
-            
 if __name__ == "__main__":
-    test_other_encodings_write_file()
-    # test_only_write_file()
-    # test_read_write_file()
-    # test_read_config_file()
+    pytest.main(['test_readwritefile.py'])
     

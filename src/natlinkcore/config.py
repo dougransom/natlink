@@ -108,7 +108,7 @@ class NatlinkConfig:
             if config.read(fn):
                 return cls.from_config_parser(config, config_path=fn)
         # should not happen, because of DefaultConfig (was InstallTest)
-        raise NoGoodConfigFoundException('No natlink config file found, please run configure natlink program\n\t(configurenatlink.pyw or natlinkconfigfunctions.py)')
+        raise NoGoodConfigFoundException('No natlink config file found, please run configure natlink program\n\t(***configurenatlink***)')
 
 def expand_path(input_path: str) -> str:
     r"""expand path if it starts with "~" or has environment variables (%XXXX%)

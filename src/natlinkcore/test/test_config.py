@@ -20,6 +20,7 @@ def test_config_locations():
     """tests the lists of possible config_locations and of valid_locations
     """
     locations = loader.config_locations()
+    # if this fails, probably the DefaultConfig/natlink.ini is not found, or 
     assert len(locations) == 2
     config_locations = loader.config_locations()
     assert len(config_locations) > 0
