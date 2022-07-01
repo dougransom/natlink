@@ -95,3 +95,5 @@ MacroSystem/*_vcl.py
 
 #python packaging
 src/dist/
+/src/natlinkcore/test/readwritefiletest/*.txt
+/src/natlinkcore/test/readwritefiletest/*.ini

@@ -2,7 +2,7 @@
 #pylint:disable= C0114, C0116
 import pytest
 
-from natlink.gramparser import GramParser, packGrammar, GrammarSyntaxError, splitApartLines
+from natlinkcore.gramparser import GramParser, packGrammar, GrammarSyntaxError, splitApartLines
 
 
 def test_packGrammar():

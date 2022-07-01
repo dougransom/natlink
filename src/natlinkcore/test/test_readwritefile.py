@@ -1,6 +1,7 @@
 
 #pylint:disable= C0114, C0116
 import os
+import shutil
 import configparser
 # import pytest
 from natlinkcore.readwritefile import ReadWriteFile
@@ -8,7 +9,9 @@ from natlinkcore.readwritefile import ReadWriteFile
 thisFile = __file__
 thisDir, Filename = os.path.split(thisFile)
 testDir = os.path.join(thisDir, 'readwritefiletest')
-
+testOutputDir = os.path.join(testDir, 'output')
+shutil.rmtree(testOutputDir)
+os.mkdir(testOutputDir)
 
 def test_read_file():
     for F in os.listdir(testDir):

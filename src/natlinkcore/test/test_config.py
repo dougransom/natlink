@@ -4,7 +4,7 @@
 import pytest
 
 from natlinkcore.config import *
-from natlink import loader
+from natlinkcore import loader
 
 @pytest.fixture()
 def empty_config():
@@ -21,9 +21,9 @@ def test_config_locations():
     """
     locations = loader.config_locations()
     assert len(locations) == 2
-    valid_locations = loader.valid_config_locations()
-    assert len(valid_locations) > 0
-    assert os.path.isfile(valid_locations[0])
+    config_locations = loader.config_locations()
+    assert len(config_locations) > 0
+    assert os.path.isfile(config_locations[0])
 
 
 if __name__ == "__main__":

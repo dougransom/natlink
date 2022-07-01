@@ -3,7 +3,7 @@
 
 import pytest
 
-from natlink.loader import *
+from natlinkcore.loader import *
 
 class MockLoggingHandler(logging.Handler):
     """Mock logging handler to check for expected logs."""
