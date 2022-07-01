@@ -46,6 +46,10 @@ Source: "{#CoreDir}\_natlink_core{code:GetDragonVersion}.pyd"; DestDir: "{#CoreD
 ; dynamically linked at _natlink.pyd launch
 Source: "{code:GetPythonInstallPath}\python{#PythonVersionNoDot}.dll"; DestDir: "{#CoreDir}"; \
   Flags: external ignoreversion; 
+; Python sources
+Source: "{#SourceRoot}\NatlinkSource\__init__.py"; DestDir: "{#CoreDir}"
+
+
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
