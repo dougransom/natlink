@@ -99,8 +99,8 @@ else:
     print(r'run the configure program of Natlink:')
 
 print()
-print('Please try to run the config program (Command Line Interface) "natlinkconfigfunctions.py",')
-print('\twhich should be in "C:\\Program Files (x86)\\Natlink\\NatlinkConfigure"')
+print('Please try to run the config program (Command Line Interface) by running ***"natlinkconfig"***')
+print('\tfrom the Windows command prompt.')
 print()
 
 print('After all these steps, (re)start Dragon and good luck...\n\n\n')

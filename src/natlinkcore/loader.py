@@ -470,14 +470,13 @@ class NatlinkMain(metaclass=Singleton):
 
 
     def start(self) -> None:
-        self.logger.info(f'starting natlink loader from config file:\n\t"{self.config.config_path}"')
+        self.logger.info(f'Starting natlink loader from config file:\n\t"{self.config.config_path}"')
         natlink.active_loader = self
         if not self.config.directories:
             self.logger.warning('Starting Natlink, but no directories to load are specified.\n\tPlease add one or more directories in your config file')
+            self.logger.warning('This is most easily done by running ***"natlinkconfig"*** from the Windows command line.')
             if self.config.config_path.startswith(str(thisDir)):
                 self.logger.warning('Also make sure your "natlink.ini" is properly located, not in above location')
-
-            return
         # self.logger.debug(f'directories: {self.config.directories}')
         self._add_dirs_to_path(self.config.directories)  
         if self.config.load_on_startup:
@@ -598,6 +597,5 @@ def run() -> None:
 if __name__ == "__main__":
     natlink.natConnect()
     run()
-    
     natlink.natDisconnect()
     
