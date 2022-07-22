@@ -13,7 +13,7 @@ Written by Doug Ransom, 2021
 #pylint:disable=C0116, W0703
 import os
 import debugpy
-import natlinkstatus
+from natlinkcore import natlinkstatus
 
 __status = natlinkstatus.NatlinkStatus()
 __natLinkPythonDebugPortEnviornmentVar= "NatlinkPyDebugPort"
