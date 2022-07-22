@@ -32,7 +32,7 @@ import natlink
 # The following file contains the GrammarBase infrastructure and some utility
 # functions like convertResults and matchWindow.
 
-from natlink.natlinkutils import *
+from natlinkcore.natlinkutils import *
 
 ############################################################################
 #

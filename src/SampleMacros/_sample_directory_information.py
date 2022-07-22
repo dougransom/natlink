@@ -11,8 +11,8 @@
 #pylint:disable=C0116, C0115, W0613
 import natlink
 import natlinkcore
-import natlinkstatus
-from natlinkutils import GrammarBase
+from natlinkcore import natlinkstatus
+from natlinkcore.natlinkutils import GrammarBase
 status = natlinkstatus.NatlinkStatus()
 
 class ThisGrammar(GrammarBase):
@@ -31,7 +31,8 @@ class ThisGrammar(GrammarBase):
         language = status.get_language()
         print(f'Language is: {language}')
         print(f'NatlinkDirectory from status (natlinkstatus): {status.getNatlinkDirectory()}')
-        print(f'NatlinkUserDirectory from natlinkcore: {natlinkcore.getNatlinkUserDirectory()}')
+        # obsolete:
+        # print(f'NatlinkUserDirectory from natlinkcore: {natlinkcore.getNatlinkUserDirectory()}')
         
 thisGrammar = ThisGrammar()
 thisGrammar.initialize()

@@ -20,7 +20,7 @@
 #
 
 import natlink
-from natlink.natlinkutils import *
+from natlinkcore.natlinkutils import *
 
 import string
 import win32api

@@ -15,7 +15,7 @@
 # April 2022, adapting a little for python3
 import time     
 import natlink
-from natlink.natlinkutils import *
+from natlinkcore.natlinkutils import *
 
 # In the grammar we map some keywords into pixel counts according to the
 # following dictionary.  These numbers can be safely changed within reason.

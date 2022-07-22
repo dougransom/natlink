@@ -84,7 +84,7 @@ import os.path          # for filename parsing
 
 import wavtools         # for convertBack
 import natlink
-from natlink.natlinkutils import *
+from natlinkcore.natlinkutils import *
 
 #
 # Miscelleanous additional global stuff

@@ -12,7 +12,7 @@
 #
 
 import natlink
-from natlinkutils import *
+from natlinkcore.natlinkutils import *
 
 class ThisGrammar(GrammarBase):
 

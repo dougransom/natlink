@@ -5,8 +5,8 @@ Try the natlinkstatus.py output, and change load_on_begin_utterance property
 """
 #pylint:disable=W0401, W0614, C0115, C0116, W0613, R0201, W0603, E1101, W0201
 import natlink
-from natlink.natlinkutils import *
-from natlink.natlinkstatus import NatlinkStatus
+from natlinkcore.natlinkutils import *
+from natlinkcore.natlinkstatus import NatlinkStatus
 status = NatlinkStatus()
 
 # prefer sendkeys method from dtactions:

@@ -10,8 +10,8 @@
 #
 
 import natlink
-from natlink.natlinkutils import *
-from natlink import nsformat
+from natlinkcore.natlinkutils import *
+from natlinkcore import nsformat
 
 class ThisGrammar(GrammarBase):
 

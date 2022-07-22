@@ -16,7 +16,7 @@
 #
 
 import natlink
-from natlink.natlinkutils import *
+from natlinkcore.natlinkutils import *
 
 class ThisGrammar(GrammarBase):
 

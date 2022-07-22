@@ -9,7 +9,7 @@
 # Quintijn Hoogenboom, q.hoogenboom@antenna.nl, november 2016
 #
 import natlink
-from natlinkutils import *
+from natlinkcore.natlinkutils import *
 
 class ThisGrammar(GrammarBase):
  
@@ -20,26 +20,27 @@ class ThisGrammar(GrammarBase):
         self.load(self.gramSpec, hypothesis=1, allResults=1)
         self.activateAll()
     def gotResults_dummy(self,words,fullResults):
-        print 'got the dummy rule of gotHypothesis'
+        print('got the dummy rule of gotHypothesis')
                            
     def gotBegin(self,moduleInfo):
-        print '_samplehypothesis, starting new recognition'
+        print('_samplehypothesis, starting new recognition')
 
     def gotHypothesis(self, words):
         """display the words when a hypothesis is called back happens
         """
-        print 'hypothesis: %s'% words
+        print('hypothesis: %s'% words)
 
     def gotResultsObject(self,recogType,resObj):
         try:
             words = resObj.getWords(0)
         except (natlink.OutOfRange, IndexError):
-                words = "<???>"
-        print '---result: %s'% words
+            words = "<???>"
+        print('---result: %s'% words)
 
 thisGrammar = ThisGrammar()
 thisGrammar.initialize()
 def unload():
     global thisGrammar
-    if thisGrammar: thisGrammar.unload()
+    if thisGrammar:
+        thisGrammar.unload()
     thisGrammar = None

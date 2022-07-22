@@ -4,8 +4,8 @@ Try/show the callback functions of the natlinkmain instance.
 
 """
 #pylint:disable=W0401, W0614, C0115, C0116, W0613, R0201, W0603, E1101, W0201
-from natlink.natlinkutils import *
-from natlink import loader
+from natlinkcore.natlinkutils import *
+from natlinkcore import loader
 
 natlinkmain = loader.NatlinkMain()
 

@@ -25,7 +25,7 @@
 # 
 
 import natlink
-from natlink import natlinkutils
+from natlinkcore import natlinkutils
 
 class ThisGrammar(natlinkutils.GrammarBase):
 
