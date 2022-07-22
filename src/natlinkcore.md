@@ -25,7 +25,7 @@ To publish the package to [The Python Package Index (PyPI)](https://pypi.org/)
 
 You can use flit to install the package locally into site-packages using symbolic links, so you can test changes without reinstalling:
 
-`flit install -s`
+`flit install --symlink`
 
 
  
