@@ -12,6 +12,7 @@ dependencies= [
     "wxPython==4.1.1", 
     "pyenvutils",
     "pydebugstring",
+    "dtactions",
 ]
 [project.scripts]
 natlinkconfig = "natlinkcore.configure.natlinkconfigfunctions:main_cli"
