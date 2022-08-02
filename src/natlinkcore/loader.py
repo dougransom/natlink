@@ -401,7 +401,7 @@ class NatlinkMain(metaclass=Singleton):
         prog_name = Path(module_info[0].lower()).stem
         if prog_name not in self.prog_names_visited:
             self.prog_names_visited.add(prog_name)
-            self.logging.debug(f'adding prog "{prog_name}" to prog_names_visited: {self.prog_names_visited}')
+            self.logger.debug(f'adding prog "{prog_name}" to prog_names_visited: {self.prog_names_visited}')
             self.trigger_load()
         elif self.load_on_begin_utterance:
             # manipulate this setting:
