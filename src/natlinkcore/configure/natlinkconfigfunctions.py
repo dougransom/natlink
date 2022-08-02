@@ -1081,6 +1081,10 @@ def main_cli():
         Cli = CLI()
         Cli.Config = NatlinkConfig()
         Cli.info = "type u for usage"
+        print("This is the natlinkconfig (CLI) utility for natlink/dragonfly/unimacro/vocola(2)/etc")
+        print("Type u for usage")
+        print()
+        
         try:
             Cli.cmdloop()
         except (KeyboardInterrupt, SystemExit):

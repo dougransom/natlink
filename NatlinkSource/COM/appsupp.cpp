@@ -140,7 +140,7 @@ static void DisplayVersions(CDragonCode* pDragCode) {
 
 	pDragCode->displayText(natlinkVersionMsg.c_str(), FALSE); // TODO: remove since version is showed in title of window
 	pDragCode->displayText((std::string("Natlink pyd path: ")+ get_this_module_path()).c_str(),FALSE);
-	pDragCode->displayText("\nUse DebugView to debug natlink problems.\n\thttps://docs.microsoft.com/en-us/sysinternals/downloads/debugview\n");
+	pDragCode->displayText("\nUse DebugView to debug natlink problems.\n\thttps://docs.microsoft.com/en-us/sysinternals/downloads/debugview\n", FALSE);
 #endif
 	const std::string pythonVersionMsg = std::string("Python Version: ") + std::string(Py_GetVersion()) + std::string("\r\n");
 	pDragCode->displayText(pythonVersionMsg.c_str(), FALSE);
@@ -259,7 +259,8 @@ STDMETHODIMP CDgnAppSupport::Register( IServiceProvider * pIDgnSite )
 		DisplayPythonException(m_pDragCode);
 		return S_OK;
 	} else {
-		m_pDragCode->displayText( "Natlink is loaded...\n\n", FALSE );
+		m_pDragCode->displayText( "Natlink is loaded...\n", FALSE );
+		m_pDragCode->displayText( "Documentation at https://natlink.readthedocs.io/\n\n" );
 	}
 
 	//need to add the path of natlinkcore to the Python path.
