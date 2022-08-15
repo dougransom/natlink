@@ -13,7 +13,7 @@ Unimacro and Vocola(2) are nearly working, a beta release for this state will be
    :caption: Contents:
 
    installation
-   modules
+   configuration
    project
 
 

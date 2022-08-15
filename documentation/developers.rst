@@ -1,6 +1,21 @@
 Developers instructions
 =======================
 
+Python modules
+==============
+
+The python modules of Natlink are in a separate project 'natlinkcore'. Documentation of these modules will be developed ASAP.
+
+The inno setup program ensures, the different projects 'natlink' (C++ code and inno setup program) and 'natlinkcore' (the core python modules) are installed in one stroke.
+
+
+Compiling Natlink
+=================
+
+The 'glue' file between python code and 'Dragon', the heart if the 'Natlink' project is a `.pyd` file, which needs to be compiled from C++ code. With this compile step, also the 'inno setup program' is compiled.
+
+When you want to contribute to python packages, look into the instructions there...
+
 When you want to contribute to the Natlink development, you will need to compile the C++ code and compile the inno setup program. Try the instructions below.
 
 Setup Visual Studio Code environment

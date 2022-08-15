@@ -1,4 +1,3 @@
-
 Project
 ==============================================================================
 
@@ -6,4 +5,5 @@ Project
    :maxdepth: 2
    :caption: Contents:
 
+   developers
    documentation
