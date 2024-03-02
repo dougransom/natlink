@@ -65,6 +65,7 @@ Here is a sample launch.json, which you can copy into one if your Python project
             "name": "Python Debugger: Natlink Remote Attach",
             "type": "debugpy",
             "request": "attach",
+            "justMyCode": false,
             "connect": {
                 "host": "localhost",
                 "port": 7474
