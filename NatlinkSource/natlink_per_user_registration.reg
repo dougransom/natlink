@@ -1,0 +1,20 @@
+
+Windows Registry Editor Version 5.00
+; we can get away with per-user registration by running this
+; because natlink doesn't need any registration in the COM system other than what is in this file.
+; note we have to substitute %MODULE% with the path the the natlink dll before running.
+; use the reg command
+; or you could write code to do the same in Powershell or Python.
+
+[HKEY_CURRENT_USER\Software\Classes\CLSID\{dd990001-bb89-11d2-b031-0060088dc929}]
+@="Python Subsystem for NatSpeak"
+"InprocServer32"="%MODULE%"
+{
+    "ThreadingModel"="Apartment"
+    "AppID"="{dd990001-bb89-11d2-b031-0060088dc929}"
+}
+
+[HKEY_CURRENT_USER\Software\Classes\AppID\{dd990001-bb89-11d2-b031-0060088dc929}]
+@="Python Subsystem for NatSpeak"
+"DllSurrogate"=""
+
