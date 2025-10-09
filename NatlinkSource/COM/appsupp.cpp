@@ -378,8 +378,6 @@ STDMETHODIMP CDgnAppSupport::UnRegister()
 
 	Py_Finalize();
 
-	PyMem_RawFree(L"python");
-
 	// finalize the Python interpreter
 	OutputDebugString( TEXT( "CDgnAppSupport::UnRegister, exit UnRegister" ) );
 
